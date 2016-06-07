@@ -1,9 +1,9 @@
-defmodule GetAmazon do
+defmodule GetAmazon.Composer do
   import Security
 
   @base_url Application.get_env(:amazon_conf, :APIBaseURL)
 
-  def search(filters) do
+  def compose_url(filters) do
     applyFilters filters, add_security_keys(@base_url)    
   end
   
