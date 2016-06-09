@@ -28,6 +28,8 @@ defmodule GetAmazon.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:httpoison, "~> 0.8.0"},
-     {:floki, "~> 0.8.1"}]
+     {:floki, "~> 0.8.1"},
+     {:timex, "~> 2.1.6"}
+    ]
   end
 end
