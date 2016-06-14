@@ -29,7 +29,7 @@ defmodule GetAmazon.Mixfile do
   defp deps do
     [{:httpoison, "~> 0.8.0"},
      {:floki, "~> 0.8.1"},
-     {:timex, "~> 2.1.6"}
+     {:chronos, "~> 1.5.1"}
     ]
   end
 end

@@ -14,7 +14,7 @@ defmodule GetAmazon.Composer do
   end
 
   defp add_mandatory_parameters(filters) do
-    {_, timestamp} = Time.get_utc_date_string()
+    timestamp = Time.get_utc_date_string()
 
 
     [compose_value({:Service, Application.get_env(:amazon_conf, :APIService)}),
