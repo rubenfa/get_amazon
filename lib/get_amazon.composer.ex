@@ -1,40 +1,42 @@
 defmodule GetAmazon.Composer do
  
-  @base_url Application.get_env(:amazon_conf, :APIBaseURL)
-
   def generate_url(search_parameters) do
-    query_string_list = generate_query_string_list(search_parameters)
 
+    query_string =
+      search_parameters
+      |> to_query_string_list
+      |> to_query_string
 
+    signature =
+      query_string
+      |> Security.create_signature
+      |> URI.encode
 
+    url_params = Application.get_all_env(:amazon_url)
 
+    "#{url_params[:APIProtocol]}://#{url_params[:APIBaseURL]}#{url_params[:APIBasePath]}?#{query_string}&Signature=#{signature}"
 
-    signature = Security.create_signature(
-      Application.get_env(:amazon_conf, :APIMethod),
-      Application.get_env(:amazon_conf, :)
-    )
-    
   end
 
-  defp generate_query_string_list(search_parameters) do
+
+  def to_query_string_list(search_parameters) do
     search_parameters
     |> add_mandatory_parameters
-    |> encode
-    |> Enum.sort_by(fn({k,v})-> byte_size(v) end)
+    |> encode_parameters
+    |> Enum.sort_by(fn({k,v})-> to_string(k) end)
   end
 
-  defp add_mandatory_parameters(filters) do
-    [{:Service, Application.get_env(:amazon_conf, :APIService)},
-     {:AWSAccessKeyId, Application.get_env(:amazon_conf, :AWSAccessKeyId)},
-     {:AWSAccessKey, Application.get_env(:amazon_conf, :AWSAccessKey)}, 
-     {:AssociateTag, Application.get_env(:amazon_conf, :AssociateTag)},
+  defp add_mandatory_parameters(search_parameters) do
+    [{:Service, Application.get_env(:amazon_parameters, :APIService)},
+     {:AWSAccessKeyId, Application.get_env(:amazon_security, :AWSAccessKeyId)},
+     {:AssociateTag, Application.get_env(:amazon_security, :AssociateTag)},
      {:Timestamp, Time.get_current_utc_datestring() }
     ]
     ++
-    (filters)
+    (search_parameters)
   end
 
-  defp get_query_string(parameters) do
+  defp to_query_string(parameters) do
     parameters
     |> Enum.map_join "&", fn(x)-> compose_value(x)  end
   end
@@ -43,7 +45,7 @@ defmodule GetAmazon.Composer do
     "#{name}=#{value}"
   end
 
-  defp encode(parameters) do
+  defp encode_parameters(parameters) do
     for {k, v} <- parameters, not is_nil(v),  do:   {k, URI.encode(v)}
   end
 

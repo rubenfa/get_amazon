@@ -1,15 +1,19 @@
 defmodule Security do
-  def create_signature(method, base_url, path, query_string) do
+  def create_signature(query_string) do
 
-    str_to_sign = """
-    #{method}
-    #{base_url}
-    #{path}
-    #{query_string}
-    """
+    security_params = Application.get_all_env(:amazon_security)
+    url_params = Application.get_all_env(:amazon_url)
 
-    :crypto.hmac(:sha256, "key", str_to_sign)
-    |> Base.encode16    
+    str_to_sign = 
+      [url_params[:APIMethod], url_params[:APIBaseURL], url_params[:APIBasePath]]
+      |> Enum.concat(String.split(query_string, "&"))
+      |> Enum.join("\n")
+    
+
+
+    :crypto.hmac(:sha256, security_params[:AWSAccessKey] , str_to_sign)
+    |> Base.encode16
+
   end
 
 end
