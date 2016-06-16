@@ -1,12 +1,15 @@
 use Mix.Config
 
-config :amazon_conf,
+config :amazon_security,
+AWSAccessKeyId: "ACCESKEYID",
+AWSAccessKey: "ACCESSKEY",
+AssociateTag: "ASSOCIATETAG"
 
-  APIProtocol: "http",
-  APIMethod: "GET",
-  APIBaseURL: "webservices.amazon.com",
-  APIBasePath: "/onca/xml",    
-  APIService: "AWSECommerceService",
-  AWSAccessKeyId: "AMAZON AWS KEY ID",
-  AWSAccessKey: "AMAZON AWS ACCESS KEY",
-  AssociateTag: "AMAZON ASSOCIATE TAG"
+config :amazon_url,
+APIProtocol: "http",
+APIMethod: "GET",
+APIBaseURL: "webservices.amazon.com",
+APIBasePath: "/onca/xml"
+
+config  :amazon_parameters,
+ APIService: "AWSECommerceService"
