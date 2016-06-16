@@ -1,16 +1,15 @@
 defmodule Security do
-  def  add_security_keys(url) do
-    url <>
-      "&AWSAccessKeyId=" <> Application.get_env(:amazon_conf, :AWSAccessKeyId) <>
-      "&AssociateTag=" <>    Application.get_env(:amazon_conf, :AssociateTag)    
-  end
+  def create_signature(method, base_url, path, query_string) do
 
+    str_to_sign = """
+    #{method}
+    #{base_url}
+    #{path}
+    #{query_string}
+    """
 
-  def add_signature(url) do
-
-
-
-    
+    :crypto.hmac(:sha256, "key", str_to_sign)
+    |> Base.encode16    
   end
 
 end
