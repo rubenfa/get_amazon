@@ -21,10 +21,8 @@ defmodule GetAmazonTest do
 
   test "returned url contains parameters like input filters" do   
     sut = Composer.generate_url [SearchIndex: "Books", Keywords: "Matrix"]
-
     assert(String.contains?(sut, "SearchIndex=Books"))
     assert(String.contains?(sut, "Keywords=Matrix"))
-
   end
   
 end
