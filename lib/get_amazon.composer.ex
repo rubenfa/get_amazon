@@ -1,5 +1,9 @@
 defmodule GetAmazon.Composer do
- 
+  @moduledoc """
+  This module generates a valid http request to Amazon Advertising API. This request is signed folowing Amazon instructions.
+  For more information visit http://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html
+  """
+
   def generate_url(search_parameters) do
     query_string = generate_query_string(search_parameters)
     signature = generate_signature(query_string)
