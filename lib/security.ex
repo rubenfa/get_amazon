@@ -1,6 +1,8 @@
 defmodule Security do
   @moduledoc  """
   Generates a signature token using a url query string
+  ## Example query_string
+    Operation="SearchItem"&SearchIndex=Electronics
   """
 
   def create_signature(query_string) do    
