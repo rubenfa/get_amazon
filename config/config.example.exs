@@ -12,4 +12,5 @@ APIBaseURL: "webservices.amazon.com",
 APIBasePath: "/onca/xml"
 
 config  :amazon_parameters,
- APIService: "AWSECommerceService"
+APIService: "AWSECommerceService",
+APIVersion: "2016-01-01"

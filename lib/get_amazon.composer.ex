@@ -4,13 +4,13 @@ defmodule GetAmazon.Composer do
 
     query_string =
       search_parameters
-      |> to_query_string_list
-      |> to_query_string
+      |> to_ordered_query_string_list
+      |> URI.encode_query
 
     signature =
       query_string
       |> Security.create_signature
-      |> URI.encode
+      |> URI.encode_www_form
 
     url_params = Application.get_all_env(:amazon_url)
 
@@ -18,11 +18,9 @@ defmodule GetAmazon.Composer do
 
   end
 
-
-  def to_query_string_list(search_parameters) do
+  def to_ordered_query_string_list(search_parameters) do
     search_parameters
-    |> add_mandatory_parameters
-    |> encode_parameters
+    |> add_mandatory_parameters    
     |> Enum.sort_by(fn({k,v})-> to_string(k) end)
   end
 
@@ -30,23 +28,10 @@ defmodule GetAmazon.Composer do
     [{:Service, Application.get_env(:amazon_parameters, :APIService)},
      {:AWSAccessKeyId, Application.get_env(:amazon_security, :AWSAccessKeyId)},
      {:AssociateTag, Application.get_env(:amazon_security, :AssociateTag)},
+     {:Version, Application.get_env(:amazon_parameters, :APIVersion)},
      {:Timestamp, Time.get_current_utc_datestring() }
     ]
     ++
     (search_parameters)
   end
-
-  defp to_query_string(parameters) do
-    parameters
-    |> Enum.map_join "&", fn(x)-> compose_value(x)  end
-  end
-
-  defp compose_value({name, value}) do
-    "#{name}=#{value}"
-  end
-
-  defp encode_parameters(parameters) do
-    for {k, v} <- parameters, not is_nil(v),  do:   {k, URI.encode(v)}
-  end
-
 end
