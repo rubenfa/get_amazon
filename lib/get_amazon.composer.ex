@@ -7,6 +7,9 @@ defmodule GetAmazon.Composer do
   [Operation: "SearchIndex", SearchIndex: "Electronics", Keywords:"Lenovo" ]
   """
 
+ 
+  alias GetAmazon.Security
+  
   def generate_url(search_parameters) do
     query_string = generate_query_string(search_parameters)
     signature = generate_signature(query_string)
@@ -17,8 +20,7 @@ defmodule GetAmazon.Composer do
 
   defp generate_signature(query_string) do
     query_string
-    |> Security.create_signature
-    |> URI.encode_www_form
+    |> Security.create_signature(Application.get_all_env(:amazon_url) ++ Application.get_all_env(:amazon_security))         |> URI.encode_www_form
   end
 
   defp generate_query_string(search_parameters) do
@@ -30,13 +32,11 @@ defmodule GetAmazon.Composer do
 
   defp add_mandatory_parameters(search_parameters) do
     mandatory_parameters =
-      [
-       Service:         Application.get_env(:amazon_parameters, :APIService),
+      [Service:         Application.get_env(:amazon_parameters, :APIService),
        AWSAccessKeyId:  Application.get_env(:amazon_security, :AWSAccessKeyId),
        AssociateTag:    Application.get_env(:amazon_security, :AssociateTag),
        Version:         Application.get_env(:amazon_parameters, :APIVersion),
-       Timestamp:       Time.get_current_utc_datestring()
-      ]
+       Timestamp:       Time.get_current_utc_datestring()]
     
     Enum.concat [mandatory_parameters, search_parameters]
   end
