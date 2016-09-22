@@ -4,6 +4,7 @@ defmodule GetAmazonTest do
 
   alias GetAmazon.Composer
   alias GetAmazon.Security
+  alias GetAmazon.RequestProcessor
 
   test "all search has AWSAccessKeyId key" do
     sut = Composer.generate_url [SearchIndex: "Electronic"]
@@ -40,6 +41,33 @@ defmodule GetAmazonTest do
     sut =  Security.create_signature(query_string, url_params)
     assert(URI.encode_www_form(sut) == "xFL89SFVOwHwIHoF1YdT%2F1qtrmTgVIDjiO4gNsiMN%2Bw%3D")
   end
+
+  test "xml parse returns a Map" do
+    xml = File.read("test/sample.xml")
+    result = RequestProcessor.get_items(xml)
+    assert(is_map(result))
+  end
+
+  test "xml parse returns a Map with some specific fields" do
+    xml = File.read("test/sample.xml")
+
+    result = RequestProcessor.get_items(xml)
+
+    assert Map.has_key?(result, "ASIN")
+    assert Map.has_key?(result, "Title")
+    assert Map.has_key?(result, "Brand")
+    assert Map.has_key?(result, "Color")
+    assert Map.has_key?(result, "Features")
+    assert Map.has_key?(result, "TextPrice")
+    assert Map.has_key?(result, "DetailURL")
+    assert Map.has_key?(result, "SmallImage")
+    assert Map.has_key?(result, "MediumImage")
+    assert Map.has_key?(result, "LargeImage")
+    assert Map.has_key?(result, "ReviewIFrameURL")
+  end
+
+
+
 
 
 end

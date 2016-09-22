@@ -30,7 +30,8 @@ defmodule GetAmazon.Mixfile do
     [{:httpoison, "~> 0.8.0"},
      # {:floki, "~> 0.8.1"},
      {:chronos, "~> 1.5.1"},
-     {:sweet_xml, "~> 0.6.1"}
+     {:sweet_xml, "~> 0.6.1"},
+     {:dogma, "~> 0.1", only: :dev},
     ]
   end
 end

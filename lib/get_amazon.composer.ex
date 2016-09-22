@@ -3,8 +3,8 @@ defmodule GetAmazon.Composer do
   This module generates a valid http request for Amazon Advertising API. This request is signed folowing Amazon instructions.
   For more information visit [Amazon Advertising API documentation](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/rest-signature.html)
 
-  ## Valid search_parameters input
-  [Operation: "SearchIndex", SearchIndex: "Electronics", Keywords:"Lenovo" ]
+  ## Valid search_pabrameters input
+  [Operation: "ItemSearch", SearchIndex: "Electronics", Keywords: "Lenovo", ResponseGroup: "Images,ItemAttributes,Offers"]
   """
 
  
@@ -20,7 +20,8 @@ defmodule GetAmazon.Composer do
 
   defp generate_signature(query_string) do
     query_string
-    |> Security.create_signature(Application.get_all_env(:amazon_url) ++ Application.get_all_env(:amazon_security))         |> URI.encode_www_form
+    |> Security.create_signature(Application.get_all_env(:amazon_url) ++ Application.get_all_env(:amazon_security))
+    |> URI.encode_www_form
   end
 
   defp generate_query_string(search_parameters) do
@@ -29,7 +30,7 @@ defmodule GetAmazon.Composer do
     |> Enum.sort_by(fn({k,_})-> to_string(k) end) 
     |> URI.encode_query
   end
-
+  
   defp add_mandatory_parameters(search_parameters) do
     mandatory_parameters =
       [Service:         Application.get_env(:amazon_parameters, :APIService),
