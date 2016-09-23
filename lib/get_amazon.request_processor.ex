@@ -5,7 +5,7 @@ defmodule GetAmazon.RequestProcessor do
   def get_items(xml) do
 
     xml
-    |> xpath(~x"//Items"l,
+    |> xpath(~x"//Items",
     MoreResultsURL: ~x"./MoreSearchResultsUrl/text()"s,
     Items: [
         ~x"./Item"l,
