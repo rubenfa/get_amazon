@@ -27,9 +27,9 @@ defmodule GetAmazon.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:httpoison, ">= 0.8.0"},
-     {:chronos, ">= 1.5.1"},
-     {:sweet_xml, ">= 0.6.1"}
+    [{:httpoison, "~> 0.8.0"},
+     {:chronos, "~> 1.5.1"},
+     {:sweet_xml, "~> 0.6.1"}
     ]
   end
 end
