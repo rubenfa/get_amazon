@@ -42,9 +42,9 @@ defmodule GetAmazonTest do
     assert(URI.encode_www_form(sut) == "xFL89SFVOwHwIHoF1YdT%2F1qtrmTgVIDjiO4gNsiMN%2Bw%3D")
   end
 
-  defp read_xml_sample() do
-    {_, xml} =  File.read("test/sample.xml")
-    xml
+  def read_xml_sample() do
+    path = Path.expand("./sample.xml", __DIR__)
+    File.read!(path)
   end
 
   test "xml parse returns a Map" do
@@ -70,14 +70,12 @@ defmodule GetAmazonTest do
         Map.has_key?(x, :SmallImage) and
         Map.has_key?(x, :MediumImage) and
         Map.has_key?(x, :LargeImage) and
-        Map.has_key?(x, :ReviewIFrameURL)
-    end)
+        Map.has_key?(x, :ReviewIFrameURL) and
+        Map.has_key?(x, :Prime) and
+        Map.has_key?(x, :Price)
+      end)
 
     assert (has_keys? == true)    
   end
-
-
-
-
 
 end
