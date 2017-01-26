@@ -9,19 +9,19 @@ defmodule GetAmazon.RequestProcessor do
     MoreResultsURL: ~x"./MoreSearchResultsUrl/text()"s,
     Items: [
         ~x"./Item"l,
-        ASIN: ~x"./ASIN/text()"s,
-        Title: ~x"./ItemAttributes/Title/text()"s,
-        Brand: ~x"./ItemAttributes/Brand/text()"s,
-        Color: ~x"./ItemAttributes/Color/text()"s,
-        Features: ~x"./ItemAttributes/Feature/text()"sl,
-        TextPrice: ~x"./ItemAttributes/ListPrice/FormattedPrice/text()"s,
-        Price: ~x"./ItemAttributes/ListPrice/Amount/text()"s  |> transform_by(&transform_price/1),
-        DetailURL: ~x"./DetailPageURL/text()"s,
-        SmallImage: ~x"./SmallImage/URL/text()"s,
-        MediumImage: ~x"./MediumImage/URL/text()"s,
-        LargeImage: ~x"./LargeImage/URL/text()"s,
-        ReviewIFrameURL: ~x"./CustomerReviews/IFrameURL/text()"s,
-        Prime: ~x"./Offers/Offer/OfferListing/IsEligibleForPrime/text()"o |> transform_by(&transform_bool/1)
+        asin: ~x"./ASIN/text()"s,
+        title: ~x"./ItemAttributes/Title/text()"s,
+        brand: ~x"./ItemAttributes/Brand/text()"s,
+        color: ~x"./ItemAttributes/Color/text()"s,
+        features: ~x"./ItemAttributes/Feature/text()"sl,
+        text_price: ~x"./ItemAttributes/ListPrice/FormattedPrice/text()"s,
+        price: ~x"./ItemAttributes/ListPrice/Amount/text()"s  |> transform_by(&transform_price/1),
+        detail_url: ~x"./DetailPageURL/text()"s,
+        image_small: ~x"./SmallImage/URL/text()"s,
+        image_medium: ~x"./MediumImage/URL/text()"s,
+        image_large: ~x"./LargeImage/URL/text()"s,
+        review_iframe_url: ~x"./CustomerReviews/IFrameURL/text()"s,
+        is_prime: ~x"./Offers/Offer/OfferListing/IsEligibleForPrime/text()"o |> transform_by(&transform_bool/1)
       ] )
   end
 

@@ -48,31 +48,30 @@ defmodule GetAmazonTest do
   end
 
   test "xml parse returns a Map" do
-    result = read_xml_sample |> RequestProcessor.get_items    
+    result = read_xml_sample() |> RequestProcessor.get_items    
     assert(is_map(result))
   end
 
   test "xml parse returns a Map with some specific fields" do
 
-    result = read_xml_sample |> RequestProcessor.get_items
-    assert(Map.has_key?(result, :MoreResultsURL))
+    result = read_xml_sample() |> RequestProcessor.get_items
 
     has_keys? =
       result[:Items] |>
       Enum.all?(fn(x) ->
-        Map.has_key?(x, :ASIN) and
-        Map.has_key?(x, :Title) and
-        Map.has_key?(x, :Brand) and
-        Map.has_key?(x, :Color) and
-        Map.has_key?(x, :Features) and
-        Map.has_key?(x, :TextPrice) and
-        Map.has_key?(x, :DetailURL) and
-        Map.has_key?(x, :SmallImage) and
-        Map.has_key?(x, :MediumImage) and
-        Map.has_key?(x, :LargeImage) and
-        Map.has_key?(x, :ReviewIFrameURL) and
-        Map.has_key?(x, :Prime) and
-        Map.has_key?(x, :Price)
+        Map.has_key?(x, :asin)
+        Map.has_key?(x, :title) and
+        Map.has_key?(x, :brand) and
+        Map.has_key?(x, :color) and
+        Map.has_key?(x, :features) and
+        Map.has_key?(x, :text_price) and
+        Map.has_key?(x, :detail_url) and
+        Map.has_key?(x, :image_small) and
+        Map.has_key?(x, :image_medium) and
+        Map.has_key?(x, :image_large) and
+        Map.has_key?(x, :review_iframe_url) and
+        Map.has_key?(x, :is_prime) and
+        Map.has_key?(x, :price)
       end)
 
     assert (has_keys? == true)    

@@ -4,9 +4,9 @@ defmodule GetAmazon.Mixfile do
   def project do
     [app: :get_amazon,
      version: "0.0.5",
-     elixir: "~> 1.2",
-     #build_embedded: Mix.env == :prod,
-     #sotart_permanent: Mix.env == :prod,
+     elixir: "~> 1.4",
+# build_embedded: Mix.env == :prod,
+# sotart_permanent: Mix.env == :prod,
      deps: deps,    
     ]
   end
@@ -30,7 +30,8 @@ defmodule GetAmazon.Mixfile do
   defp deps do
     [{:httpoison, "~> 0.8.0"},
      {:chronos, "~> 1.5.1"},
-     {:sweet_xml, "~> 0.6.1"}
+     {:sweet_xml, "~> 0.6.1"},
+     {:dogma, "~> 0.1", only: :dev}
     ]
   end
 end
