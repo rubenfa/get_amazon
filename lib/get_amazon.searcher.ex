@@ -6,11 +6,14 @@ defmodule GetAmazon.Searcher do
   def search(filters) do
     HTTPoison.start
 
-    Composer.generate_url(filters)
-    |> HTTPoison.get!
-    |> parse_response_body
-    |> RequestProcessor.get_items
+    result =
+      Composer.generate_url(filters)
+      |> HTTPoison.get!
+      |> parse_response_body
+      |> RequestProcessor.get_items   
   end
+
+ 
 
   def xml_search_to_file(path, filters) do
     HTTPoison.start     

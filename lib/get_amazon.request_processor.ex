@@ -5,8 +5,7 @@ defmodule GetAmazon.RequestProcessor do
   def get_items(xml) do
 
     xml
-    |> xpath(~x"//Items",
-    MoreResultsURL: ~x"./MoreSearchResultsUrl/text()"s,
+    |> xpath(~x"//Items",    
     Items: [
         ~x"./Item"l,
         asin: ~x"./ASIN/text()"s,
@@ -22,7 +21,10 @@ defmodule GetAmazon.RequestProcessor do
         image_large: ~x"./LargeImage/URL/text()"s,
         review_iframe_url: ~x"./CustomerReviews/IFrameURL/text()"s,
         is_prime: ~x"./Offers/Offer/OfferListing/IsEligibleForPrime/text()"o |> transform_by(&transform_bool/1)
-      ] )
+    ] )
+
+
+
   end
 
   defp transform_price(price) do

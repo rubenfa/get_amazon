@@ -50,6 +50,7 @@ defmodule GetAmazonTest do
   test "xml parse returns a Map" do
     result = read_xml_sample() |> RequestProcessor.get_items    
     assert(is_map(result))
+    assert Enum.count(result[:Items]) > 0
   end
 
   test "xml parse returns a Map with some specific fields" do
