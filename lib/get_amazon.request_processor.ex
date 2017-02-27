@@ -5,7 +5,9 @@ defmodule GetAmazon.RequestProcessor do
   def get_items(xml) do
 
     xml
-    |> xpath(~x"//Items",    
+    |> xpath(~x"//Items",
+    TotalResults: ~x"//Items/TotalResults/text()"s |> transform_by(&transform_to_integer/1),
+    TotalPages: ~x"//Items/TotalPages/text()"s |> transform_by(&transform_to_integer/1),
     Items: [
         ~x"./Item"l,
         asin: ~x"./ASIN/text()"s,
@@ -37,6 +39,10 @@ defmodule GetAmazon.RequestProcessor do
     {amount, decimals} = num_list |> Enum.split(-2)
 
     "#{amount}.#{decimals}"
+  end
+
+  defp transform_to_integer(number_string) do
+    String.to_integer(number_string)    
   end
 
   defp transform_bool(num_val) do
