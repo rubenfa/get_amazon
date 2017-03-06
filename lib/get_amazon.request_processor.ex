@@ -22,7 +22,14 @@ defmodule GetAmazon.RequestProcessor do
         image_medium: ~x"./MediumImage/URL/text()"s,
         image_large: ~x"./LargeImage/URL/text()"s,
         review_iframe_url: ~x"./CustomerReviews/IFrameURL/text()"s,
-        is_prime: ~x"./Offers/Offer/OfferListing/IsEligibleForPrime/text()"o |> transform_by(&transform_bool/1)
+        is_prime: ~x"./Offers/Offer/OfferListing/IsEligibleForPrime/text()"o |> transform_by(&transform_bool/1),
+        offers: [
+          ~x"./Offers/Offer"l,
+          merchant: ~x"./Merchant/Name/text()"s,
+          condition: ~x"./OfferAttributes/Condition/text()"s,
+          price: ~x"./OfferListing/Price/Amount/text()"s,
+          text_price: ~x"./OfferListing/Price/FormattedPrice/text()"s
+          ]
     ] )
 
 
