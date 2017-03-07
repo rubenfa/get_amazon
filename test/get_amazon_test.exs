@@ -77,7 +77,8 @@ defmodule GetAmazonTest do
         Map.has_key?(x, :image_large) and
         Map.has_key?(x, :review_iframe_url) and
         Map.has_key?(x, :is_prime) and
-        Map.has_key?(x, :price)
+        Map.has_key?(x, :price) and
+        Map.has_key?(x, :offers)
       end)
 
     assert (has_keys? == true)    
