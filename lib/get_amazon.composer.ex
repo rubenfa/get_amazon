@@ -6,21 +6,32 @@ defmodule GetAmazon.Composer do
   ## Valid search_pabrameters input
   [Operation: "ItemSearch", SearchIndex: "Electronics", Keywords: "Lenovo", ResponseGroup: "Images,ItemAttributes,Offers"]
   """
-
  
   alias GetAmazon.Security
-  
-  def generate_url(search_parameters) do
-    query_string = generate_query_string(search_parameters)
-    signature = generate_signature(query_string)
-    url_params = Application.get_all_env(:amazon_url)
+  alias Application, as: App
 
-    "#{url_params[:APIProtocol]}://#{url_params[:APIBaseURL]}#{url_params[:APIBasePath]}?#{query_string}&Signature=#{signature}"
+  def generate_url(search_parameters) do
+    search_parameters
+    |> generate_query_string
+    |> append_signature
+    |> append_url_base
   end
 
+  defp append_url_base(full_query) do
+    url_params = App.get_all_env(:amazon_url)
+
+    "#{url_params[:APIProtocol]}://#{url_params[:APIBaseURL]}#{url_params[:APIBasePath]}#{full_query}"
+  end
+
+  defp append_signature(query_string) do
+    signature = generate_signature(query_string)
+
+    "?#{query_string}&Signature=#{signature}"
+  end
+  
   defp generate_signature(query_string) do
     query_string
-    |> Security.create_signature(Application.get_all_env(:amazon_url) ++ Application.get_all_env(:amazon_security))
+    |> Security.create_signature(App.get_all_env(:amazon_url) ++ App.get_all_env(:amazon_security))
     |> URI.encode_www_form
   end
 
@@ -33,10 +44,10 @@ defmodule GetAmazon.Composer do
   
   defp add_mandatory_parameters(search_parameters) do
     mandatory_parameters =
-      [Service:         Application.get_env(:amazon_parameters, :APIService),
-       AWSAccessKeyId:  Application.get_env(:amazon_security, :AWSAccessKeyId),
-       AssociateTag:    Application.get_env(:amazon_security, :AssociateTag),
-       Version:         Application.get_env(:amazon_parameters, :APIVersion),
+      [Service:         App.get_env(:amazon_parameters, :APIService),
+       AWSAccessKeyId:  App.get_env(:amazon_security, :AWSAccessKeyId),
+       AssociateTag:    App.get_env(:amazon_security, :AssociateTag),
+       Version:         App.get_env(:amazon_parameters, :APIVersion),
        Timestamp:       Time.get_current_utc_datestring()]
     
     Enum.concat [mandatory_parameters, search_parameters]

@@ -31,9 +31,6 @@ defmodule GetAmazon.RequestProcessor do
           text_price: ~x"./OfferListing/Price/FormattedPrice/text()"s
           ]
     ] )
-
-
-
   end
 
   defp transform_price(price) do
