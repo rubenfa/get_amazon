@@ -28,7 +28,8 @@ defmodule GetAmazon.RequestProcessor do
           merchant: ~x"./Merchant/Name/text()"s,
           condition: ~x"./OfferAttributes/Condition/text()"s,
           price: ~x"./OfferListing/Price/Amount/text()"s |> transform_by(&transform_price/1),
-          text_price: ~x"./OfferListing/Price/FormattedPrice/text()"s
+          text_price: ~x"./OfferListing/Price/FormattedPrice/text()"s,
+          availability: ~x"./OfferListing/AvailabilityAttributes/AvailabilityType/text()"s
           ]
     ] )
   end

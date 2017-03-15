@@ -63,25 +63,44 @@ defmodule GetAmazonTest do
     result = read_xml_sample() |> RequestProcessor.get_items
 
     has_keys? =
-      result[:Items] |>
-      Enum.all?(fn(x) ->
-        Map.has_key?(x, :asin)
-        Map.has_key?(x, :title) and
-        Map.has_key?(x, :brand) and
-        Map.has_key?(x, :color) and
-        Map.has_key?(x, :features) and
-        Map.has_key?(x, :text_price) and
-        Map.has_key?(x, :detail_url) and
-        Map.has_key?(x, :image_small) and
-        Map.has_key?(x, :image_medium) and
-        Map.has_key?(x, :image_large) and
-        Map.has_key?(x, :review_iframe_url) and
-        Map.has_key?(x, :is_prime) and
-        Map.has_key?(x, :price) and
-        Map.has_key?(x, :offers)
+      result[:Items]
+      |>Enum.all?(fn(x) ->
+         Map.has_key?(x, :asin)
+         Map.has_key?(x, :title) and
+         Map.has_key?(x, :brand) and
+         Map.has_key?(x, :color) and
+         Map.has_key?(x, :features) and
+         Map.has_key?(x, :text_price) and
+         Map.has_key?(x, :detail_url) and
+         Map.has_key?(x, :image_small) and
+         Map.has_key?(x, :image_medium) and
+         Map.has_key?(x, :image_large) and
+         Map.has_key?(x, :review_iframe_url) and
+         Map.has_key?(x, :is_prime) and
+         Map.has_key?(x, :price) and
+         Map.has_key?(x, :offers)
       end)
 
     assert (has_keys? == true)    
+  end
+
+  test "xml parse returns offers with some specific fields" do
+    result = read_xml_sample() |> RequestProcessor.get_items
+
+    has_keys? =
+      result[:Items]
+      |> Enum.filter(fn(x)-> x.offers != []  end)
+      |> Enum.flat_map(fn(x)-> x.offers end)
+      |> Enum.all?(fn(x) ->
+        Map.has_key?(x, :merchant) and
+        Map.has_key?(x, :condition) and
+        Map.has_key?(x, :price) and
+        Map.has_key?(x, :text_price) and
+        Map.has_key?(x, :availability)
+   end)
+
+    assert (has_keys? == true)
+
   end
 
 end
