@@ -7,7 +7,13 @@ defmodule GetAmazon.Schema.Types do
       unquote(block)
       result = get_buffer(var!(buffer, GetAmazon.Schema.Types))
       stop_buffer(var!(buffer, GetAmazon.Schema.Types))
-      result
+
+
+      case result == Enum.uniq(result) do
+        true -> result
+        false -> raise ArgumentError, message: "Product can not have duplicated elements"
+      end
+     
     end
   end
 

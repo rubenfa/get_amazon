@@ -28,9 +28,20 @@ defmodule GetAmazon.Tests.ProductMacro  do
     end
 
     assert result == [:asin, :name]
+   end
+
+
+  test "Product macro is able to use more than one field but without repetition" do
+
+    assert_raise ArgumentError, "Product can not have duplicated elements",
+    fn ->
+        product do
+          field :asin
+          field :name
+          field :asin
+        end
+      end
   end
-
-
   
 
 end
