@@ -2,12 +2,13 @@ defmodule GetAmazon.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :get_amazon,
-     version: "0.0.5",
-     elixir: "~> 1.5",
-# build_embedded: Mix.env == :prod,
-# sotart_permanent: Mix.env == :prod,
-     deps: deps,    
+    [
+      app: :get_amazon,
+      version: "0.0.5",
+      elixir: "~> 1.6.0-rc.1",
+      # build_embedded: Mix.env == :prod,
+      # sotart_permanent: Mix.env == :prod,
+      deps: deps
     ]
   end
 
@@ -28,9 +29,11 @@ defmodule GetAmazon.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:httpoison, "~> 0.13"},
-     {:chronos, "~> 1.5.1"},
-     {:sweet_xml, "~> 0.6.4"}
+    [
+      {:httpoison, "~> 0.13"},
+      {:chronos, "~> 1.5.1"},
+      {:sweet_xml, "~> 0.6.4"},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
 end

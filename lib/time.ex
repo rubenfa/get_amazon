@@ -1,8 +1,12 @@
 defmodule Time do
-  import Chronos 
+  @moduledoc """
+  To get datetimes in a specific format
+  """
 
-  def get_current_utc_datestring() do
-#    Chronos.Formatter.strftime(Chronos.now ,  "%Y-%0m-%0dT%H:%M:%S.000Z")
-    Chronos.Formatter.iso8601(Chronos.now)
+  import Chronos
+
+  def get_current_utc_datestring do
+    #    Chronos.Formatter.strftime(Chronos.now ,  "%Y-%0m-%0dT%H:%M:%S.000Z")
+    Chronos.Formatter.iso8601(Chronos.now())
   end
 end
