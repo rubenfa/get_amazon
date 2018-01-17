@@ -1,5 +1,4 @@
 defmodule GetAmazon.RequestProcessor do
-
   @moduledoc """
   Used to take a XML result from Amazon and extract all needed attributes in a map
   """

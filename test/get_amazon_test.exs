@@ -34,7 +34,8 @@ defmodule GetAmazon.Tests.Security do
 
     query_string =
       "AWSAccessKeyId=123456&AssociateTag=PutYourAssociateTagHere&Keywords=harry%20potter&Operation=ItemSearch&SearchIndex=Books&Service=AWSECommerceService&Timestamp=2016-06-22T06%3A27%3A37.000Z&Version=2011-08-01"
-gs
+
+    gs
     sut = Security.create_signature(query_string, url_params)
     assert(URI.encode_www_form(sut) == "xFL89SFVOwHwIHoF1YdT%2F1qtrmTgVIDjiO4gNsiMN%2Bw%3D")
   end
