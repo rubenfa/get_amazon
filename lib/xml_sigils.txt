@@ -1,0 +1,4 @@
+ROOT;~x"./Item"l;asin;~x"./ASIN/text()"s
+Items;~x"./Item"l;detail_page_url;~x"./DetailPageURL/text()"s
+
+ 
