@@ -13,52 +13,19 @@ defmodule GetAmazon.GetInfo do
     end
   end
 
-  def load_xpaths(file_name) do
+  defmacro load_xpaths(file_name) do
+    import SweetXml
 
-    xpaths =load_from_file(file_name)
-
-    IO.inspect(xpaths)
-
-    xpaths
-    |> Enum.reverse
-    |> Enum.reduce([], fn(x, acc) -> create_sigil_call(x, acc) end)    
-  end
-
-
-  def create_sigil_call({"NODE", parent, name, xpath}, acc) do
-    element =[parent, [ { String.to_atom(name), xpath}]]
-    [element | acc]
-  end
-
-  def create_sigil_call({"LEAF", parent, name, xpath}, acc) do
-    
-
-    ["a" | acc]
-  end
-
-  def load_from_file(file_name) do
-    File.stream!(Path.join([__DIR__, file_name]))
-    |> Stream.map(&String.trim/1)
-    |> Enum.to_list()
-    |> Enum.map(fn line -> line |> String.split(";") |> List.to_tuple() end)
-    |> Enum.map(fn {node_type, parent, parent_type, name, xpath, xpath_type} ->
-      {node_type, create_sweet_sigil(parent, parent_type), name,
-       create_sweet_sigil(xpath, xpath_type)}
-    end)
-  end
-
-  def create_sweet_sigil(parent, "") do
-    SweetXml.sigil_x(parent)
-  end
-
-  def create_sweet_sigil(parent, type) do
-    sweet_type = type |> to_charlist |> create_sweet_type
-    SweetXml.sigil_x(parent, sweet_type)
-  end
-
-  def create_sweet_type(type) do
-    type
-    |> Enum.uniq()
+    data =
+      File.stream!(Path.join([__DIR__, file_name]))
+      |> Stream.map(&String.trim/1)
+      |> Enum.to_list()
+      |> Enum.map(fn line -> line |> String.split(";") |> List.to_tuple() end)
+      |> Enum.map(fn {parent, name, x} ->
+        quote do
+          {unquote(parent), unquote(name), unquote(x)}
+        end
+      end)
   end
 
   defmacro amazon_type(type, xml, do: get_block) do

@@ -1,3 +1,3 @@
-NODE;//Items;l;Items;./Item;l
-LEAF;./Item;l;asin;./ASIN/text();s
-LEAF;./Item;l;detail_page;./DetailPage/text();s
+Items;all00;~x"//Items/Items"l
+Items;asin;~x"./ASIN/text()"s
+Items;detail_page;~x"./DetailPage/text()"s

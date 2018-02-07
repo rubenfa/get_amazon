@@ -3,7 +3,7 @@ defmodule GetAmazon.GetInfoMacro do
   doctest GetAmazon.GetInfo
 
   import GetAmazon.GetInfo
-
+  import SweetXml
   alias GetAmazon.GetInfo
 
   """
@@ -37,126 +37,15 @@ defmodule GetAmazon.GetInfoMacro do
     end
   end
 
-  test "Testing SweetXml creation types" do
-    result = 'sl' |> GetInfo.create_sweet_type()
-    assert result == 'sl'
-  end
-
-  test "Testing SweetXml creation types with duplicates " do
-    result = 'sFFl' |> GetInfo.create_sweet_type()
-    assert result == 'sFl'
-  end
-
-  test "Testing SweetXml sigil creation without types" do
-    result = GetInfo.create_sweet_sigil("\\Items", "")
-
-    assert result == %SweetXpath{
-             path: '\\Items'
-           }
-  end
-
-  test "Testing SweetXml sigil creation with type l" do
-    result = GetInfo.create_sweet_sigil("\\Items", "l")
-    IO.inspect(result)
-
-    assert result == %SweetXpath{
-             path: '\\Items',
-             is_list: true
-           }
-  end
-
-  test "Testing SweetXml sigil creation with type ls" do
-    result = GetInfo.create_sweet_sigil("\\Items", "ls")
-    IO.inspect(result)
-
-    assert result == %SweetXpath{
-             path: '\\Items',
-             is_list: true,
-             cast_to: :string
-           }
-  end
-
-  test "Testing SweetXml sigil creation with type lS" do
-    result = GetInfo.create_sweet_sigil("\\Items", "lS")
-    IO.inspect(result)
-
-    assert result == %SweetXpath{
-             path: '\\Items',
-             is_list: true,
-             cast_to: :soft_string
-           }
-  end
-
   test "Loading file with SweetXml expressions" do
     result = GetInfo.load_from_file("../test/schemas/test_item_search_request.txt")
 
     assert result == [
-             {"NODE",
-              %SweetXpath{
-                cast_to: false,
-                is_keyword: false,
-                is_list: true,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: '//Items',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }, "Items",
-              %SweetXpath{
-                cast_to: false,
-                is_keyword: false,
-                is_list: false,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: './Item',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }},
-             {"LEAF",
-              %SweetXpath{
-                cast_to: false,
-                is_keyword: false,
-                is_list: true,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: './Item',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }, "asin",
-              %SweetXpath{
-                cast_to: :string,
-                is_keyword: false,
-                is_list: false,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: './ASIN/text()',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }},
-             {"LEAF",
-              %SweetXpath{
-                cast_to: false,
-                is_keyword: false,
-                is_list: true,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: './Item',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }, "detail_page",
-              %SweetXpath{
-                cast_to: :string,
-                is_keyword: false,
-                is_list: false,
-                is_optional: false,
-                is_value: true,
-                namespaces: [],
-                path: './DetailPage/text()',
-                transform_fun: &SweetXpath.Priv.self_val/1
-              }}
+             {"Items", "all00", "~x\"//Items/Items\"l"},
+             {"Items", "asin", "~x\"./ASIN/text()\"s"},
+             {"Items", "detail_page", "~x\"./DetailPage/text()\"s"}
            ]
   end
-
 
   test "Schema readed has to be converted to structure" do
     result = GetInfo.load_xpaths("../test/schemas/test_item_search_request.txt")
@@ -164,14 +53,49 @@ defmodule GetAmazon.GetInfoMacro do
     assert result == []
   end
 
-  # ROOT;~x"//Items"
+  # ROTO;~x"//Items"
   # Items;~x"./Item"l
   # asin;~x"./ASIN/text()"s
   # detail_page;~x"./DetailPage/text()"s
 
-  test "Macro load xpaths from file" do
-    xpaths = GetAmazon.GetInfo.load_xpaths()
+  # test "Macro load xpaths from file" do
+  #   xpaths = GetInfo.load_xpaths("../test/schemas/test_item_search_request.txt")
 
-    assert xpaths == []
+  #   xml = read_xml_sample()
+
+  #   good = xml |> xmap( 
+  #     Items: [
+  #       ~x"//Items/Items"l,
+  #       asin: ~x"./ASIN/text()"s,
+  #       detail_page: ~x"./DetailPage/text()"s
+  #     ])
+
+  #   test = xml |> xmap(nil, nil, xpaths)
+
+  #   assert good == test
+  #  end
+
+  def read_xml_sample() do
+    path = Path.expand("./sample.xml", __DIR__)
+    File.read!(path)
   end
 end
+
+# xmap(
+#   matchups: [
+#     ~x"//matchups/matchup"l,
+#     name: ~x"./name/text()",
+#     winner: [
+#       ~x".//team/id[.=ancestor::matchup/@winner-id]/..",
+#       name: ~x"./name/text()"
+#     ]
+#   ],
+#   last_matchup: [
+#     ~x"//matchups/matchup[last()]",
+#     name: ~x"./name/text()",
+#     winner: [
+#       ~x".//team/id[.=ancestor::matchup/@winner-id]/..",
+#       name: ~x"./name/text()"
+#     ]
+#   ]
+# ()
