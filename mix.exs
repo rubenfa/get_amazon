@@ -5,7 +5,7 @@ defmodule GetAmazon.Mixfile do
     [
       app: :get_amazon,
       version: "0.0.5",
-      elixir: "~> 1.6.0-rc.1",
+      elixir: "~> 1.6.1",
       # build_embedded: Mix.env == :prod,
       # sotart_permanent: Mix.env == :prod,
       deps: deps

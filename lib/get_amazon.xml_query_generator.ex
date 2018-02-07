@@ -49,8 +49,6 @@ defmodule GetAmazon.Xml.QueryGenerator do
 
   def put_root(buff, keyword) do
     Agent.update(buff, fn state ->
-      IO.inspect(keyword)
-      IO.inspect(state)
       put_new(state, keyword)
     end)
   end
