@@ -66,3 +66,4 @@ end
 #       asin: ~x"./ASIN/text()"s,
 #       detail_page: ~x"./DetailPage/text()"s
 #     ])
+inhibit(same(window))

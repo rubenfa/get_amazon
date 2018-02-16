@@ -40,6 +40,10 @@ defmodule GetAmazon.RequestProcessor do
     )
   end
 
+  def get(xml, query) do
+    xml |> xmap(query)
+  end
+
   defp transform_price(price) do
     price
     |> String.codepoints()

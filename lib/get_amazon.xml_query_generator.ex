@@ -1,13 +1,67 @@
 defmodule GetAmazon.Xml.QueryGenerator do
   import SweetXml
 
-  #   good = xml |> xmap( 
-  #     Items: [
-  #       ~x"//Items/Items"l,
-  #       asin: ~x"./ASIN/text()"s,
-  #       detail_page: ~x"./DetailPage/text()"s
-  #     ])
+  @moduledoc """
 
+  This module provides a DSL (Domain Specified Language) to generate SweetXML queries, and parse Amazon XML responses into maps.
+
+  There are two types of elements: lists and fields. It's mandatory that fields be withing lists. A list has to have a name (an atom) and an XPath as arguments. A field has to have a name, an XPath and a type as an arguments (:string is alowed).
+
+  Amplié:
+
+    iex> amazon_query do
+           list :Items, "//Items/Item" do
+           field(:asin, "./ASIN/text()", :string)
+           field(:detail_page, "./DetailPageURL/text()", :string)
+           end
+             end
+
+           [ 
+             Items: [
+               %SweetXpath{
+                 cast_to: false,
+                 is_keyword: false,
+                 is_list: true,
+                 is_optional: false,
+                 is_value: true,
+                 namespaces: [],
+                 path: '//Items/Item',
+                 transform_fun: &SweetXpath.Priv.self_val/1
+                 },
+                 {
+                 :asin,
+                 %SweetXpath{
+                   cast_to: :string,
+                   is_keyword: false,
+                   is_list: false,
+                   is_optional: false,
+                   is_value: true,
+                   namespaces: [],
+                   path: './ASIN/text()',
+                   transform_fun: &SweetXpath.Priv.self_val/1
+                   }},
+                 {
+                 :detail_page,
+                 %SweetXpath{
+                   cast_to: :string,
+                   is_keyword: false,
+                   is_list: false,
+                   is_optional: false,
+                   is_value: true,
+                   namespaces: [],
+                   path: './DetailPageURL/text()',
+                   transform_fun: &SweetXpath.Priv.self_val/1
+                   }}
+             ]
+           ]
+
+
+  """
+
+  @doc  """
+  First entry point of the macro is `amazon_query`. This macro starts a AgentServer to use it as buffer to store elements of macro like lists and fields.
+  When the macro has processed all children, stops the buffer and return the composed result
+  """
   defmacro amazon_query(do: inner) do
     quote do
       {:ok, var!(buffer, __MODULE__)} = start_buffer([])
@@ -18,16 +72,32 @@ defmodule GetAmazon.Xml.QueryGenerator do
     end
   end
 
+  @doc """
+  Second macro of the sequence. A `list` has to be within `amazon_query` macro. It creates a SweetXml sigil of type list. 
+
+  """
   defmacro list(name, xpath, do: inner) do
     quote do
       element_sigil = unquote(xpath)
       element_name = unquote(name)
 
-      element = {String.to_atom(element_name), ~x(#{element_sigil})l}
+      element = {element_name, [~x(#{element_sigil})l]}
 
       put_root(var!(buffer, __MODULE__), element)
 
       unquote(inner)
+    end
+  end
+
+  @doc """
+  Field elements has to be within list elements. An element has a type as third parameter. It could be `:string`, `:integer` or `:float`. If a fourth parameter is include
+
+  """
+
+  defmacro field(name, xpath, :string, [optional: true]) do
+    quote do
+      element = {unquote(name), ~x(#{unquote(xpath)})so}
+      put_child(var!(buffer, __MODULE__), element)
     end
   end
 
@@ -54,21 +124,21 @@ defmodule GetAmazon.Xml.QueryGenerator do
   end
 
   def put_new([], keyword) do
-    [[keyword]]
+    Keyword.new([keyword])
   end
 
   def put_new(state, keyword) do
-    [[keyword] | state]
+    [Keyword.new([keyword]) | state]
   end
 
   def put_child(buff, keyword) do
     Agent.update(buff, fn [root | others] ->
-      put_new_child(root, others, keyword)
+      put_new_child(others, root, keyword)
     end)
   end
 
-  def put_new_child([], root, keyword) do
-    updated_root = root ++ [keyword]
+  def put_new_child([], root = {key, elements}, keyword) do
+    updated_root = {key, elements ++ [keyword]}
     [updated_root]
   end
 
